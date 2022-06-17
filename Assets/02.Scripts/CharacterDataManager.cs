@@ -2,56 +2,51 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using System.Text.RegularExpressions;
+
+public enum eClassType
+{
+    Unknown,
+    Berserker,
+    Paladin,
+    Elementalist,
+    Wizard,
+    Archer,
+    Thief,
+    Priest,
+    Last,
+}
+
 public class CharacterDataManager : MonoBehaviour
 {
-    GameManager _gameManager;
+    GameManagerData _gameManager;
+
+    [SerializeField] string CharacterListFileName;
+
     private void Awake()
     {
-        _gameManager = GameManager.Instance;
-        _gameManager.OnRegisterLoad();
+        _gameManager = GameManagerData.Instance;
+        _gameManager.RegisterLoad();
 
-        AddCharacterList("±¸¹ÌÈ£¸À ÄíÅ°");
-        AddCharacterList("±ÙÀ°¸À ÄíÅ°");
-        AddCharacterList("´ÑÀÚ¸À ÄíÅ°");
-        AddCharacterList("´ÙÅ©Ä«Ä«¿À ÄíÅ°");
-        AddCharacterList("´ÚÅÍ ¿Í»çºñ ÄíÅ°");
-        AddCharacterList("´Şºû¼ú»ç ÄíÅ°");
-        AddCharacterList("µş±âÅ©·¹Æä¸À ÄíÅ°");
-        AddCharacterList("¸¶¹ı»ç¸À ÄíÅ°");
-        AddCharacterList("¸í¶ûÇÑ ÄíÅ°");
-        AddCharacterList("¸ñÈ­¸À ÄíÅ°");
-        AddCharacterList("¹Ù´Ù¿äÁ¤ ÄíÅ°");
-        AddCharacterList("¹ìÆÄÀÌ¾î¸À ÄíÅ°");
-        AddCharacterList("ºÒ²ÉÁ¤·É ÄíÅ°");
-        AddCharacterList("»şºª»ó¾î¸À ÄíÅ°");
-        AddCharacterList("¼­¸®¿©¿Õ ÄíÅ°");
-        AddCharacterList("½Ã°£Áö±â ÄíÅ°");
-        AddCharacterList("½Ç·Ğ³ªÀÌÆ® ÄíÅ°");
-        AddCharacterList("¾Ç¸¶¸À ÄíÅ°");
-        AddCharacterList("¾îµÒ¸¶³à ÄíÅ°");
-        AddCharacterList("¿¡Å¬·¹¾î¸À ÄíÅ°");
-        AddCharacterList("¿¬±İ¼ú»ç¸À ÄíÅ°");
-        AddCharacterList("¿¹¾ğÀÚ¸À ÄíÅ°");
-        AddCharacterList("¿ë°¨ÇÑ ÄíÅ°");
-        AddCharacterList("¿ë»ç¸À ÄíÅ°");
-        AddCharacterList("¿ş¾î¿ïÇÁ¸À ÄíÅ°");
-        AddCharacterList("Àü°¥¸À ÄíÅ°");
-        AddCharacterList("Á»ºñ¸À ÄíÅ°");
-        AddCharacterList("Ãµ³â³ª¹« ÄíÅ°");
-        AddCharacterList("Ãµ»ç¸À ÄíÅ°");
-        AddCharacterList("Ä¡¾î¸®´õ¸À ÄíÅ°");
-        AddCharacterList("Å½Çè°¡¸À ÄíÅ°");
-        AddCharacterList("ÆÄÀÏ·µ¸À ÄíÅ°");
-        AddCharacterList("ÇØÀû¸À ÄíÅ°");
-        AddCharacterList("Çãºê¸À ÄíÅ°");
-        AddCharacterList("È¦¸®º£¸® ÄíÅ°");
-        AddCharacterList("È÷¾î·Î¸À ÄíÅ°");
+        InitCharacterList();
 
-        _gameManager.OnLoadComplete();
+        _gameManager.CompleteLoad();
     }
 
-    void AddCharacterList(string line)
+    void InitCharacterList()
     {
-        _gameManager.CharacterNameList.Add(line);
+        if (CharacterListFileName == "") return;
+
+        TextAsset data = Resources.Load(CharacterListFileName) as TextAsset;
+
+        var lines = Regex.Split(data.text, "\r\n");
+
+        for (int i = 2; i < lines.Length; ++i)
+        {
+            var strings = Regex.Split(lines[i], "\t");
+
+            if (strings.Length <= 0 || strings[0] == "") continue;
+            _gameManager.CharacterNameList.Add(strings[1]);
+        }
     }
 }

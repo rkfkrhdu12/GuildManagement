@@ -769,7 +769,8 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: GSTU_Legacy;GSTU_Legacy;GSTU_Legacy
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
